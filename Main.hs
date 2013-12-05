@@ -24,7 +24,7 @@ module Main where
       4 -> do putStrLn "You quit!"
       _ -> do putStrLn "Invalid choice! Choose again!" 
               menuLoop
-
+--lalala
 
   joinLanGame :: IO ()
   joinLanGame = do
