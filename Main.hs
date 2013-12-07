@@ -1,6 +1,7 @@
 module Main where 
   import Communication (open, close, accept, handleConnection, connect)
   import Network.Socket (withSocketsDo)
+  import Control.Exception 
 
   menuLoop :: IO ()
   menuLoop = do 
@@ -36,11 +37,17 @@ module Main where
   startLanGame :: IO () 
   startLanGame = do 
     sock <- open 2222 
-    accept sock >>= 
-      (\ conn@(hdl, h, p) -> do 
-        putStrLn $ "Connected: " ++ h ++ ":" ++ show p 
-        return conn ) >>= handleConnection >> close sock
+    handle 
+      (\ (SomeException e) -> do err e >> close sock) 
+      (accept sock >>= log' >>= handleConnection >> close sock)
+      where 
+        log' conn@(hdl, h, p) = do 
+          putStrLn $ "Connected: " ++ h ++ ":" ++ show p 
+          return conn
 
+        err e = do 
+          print e
+          return ()
 
   main :: IO () 
   main = withSocketsDo $ do 
