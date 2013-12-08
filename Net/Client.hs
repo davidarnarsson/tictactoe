@@ -12,7 +12,7 @@ module Net.Client where
 
   join :: HostName -> IO (LocalPlayer, RemotePlayer, Handle)
   join host = do 
-    hdl <- connect host 2222 
+    hdl <- connect host 2345 
     putStrLn "What's your name?"
     oPlayer <- getLine 
 

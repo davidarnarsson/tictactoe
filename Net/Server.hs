@@ -15,7 +15,7 @@ module Net.Server where
       putStrLn "What is your name?"
       xPlayer <- getLine
 
-      sock <- open 2222
+      sock <- open 2345
       dat <- accept sock >>= onJoined xPlayer
       return dat
 
