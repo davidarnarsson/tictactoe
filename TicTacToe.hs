@@ -99,79 +99,12 @@ module TicTacToe where
         bsize = length (rows game)-1
         row = fst pos
         col = snd pos
-
-  {--------------------------------------------------------------------------
-  -- IO Stuff:
-  --------------------------------------------------------------------------
-
-
-
-  -- The Game loop!
-  gameLoop :: TicTacToe -> Char -> IO()
-  gameLoop prevMove currPlayer = do
-    putStr $ "\nPlayer " ++ (show currPlayer) ++ ": "
-    userInput <- getLine
-    let currentMove = (digitToInt $ userInput!!0, digitToInt $ userInput!!1)
-    if isLegal prevMove currentMove then do
-      if isBlank prevMove currentMove then do 
-        let gameState = update prevMove currentMove (Just currPlayer)
-        printGame gameState
-        if isDrawn gameState then gameDrawn (length $ rows gameState)
-        else if win gameState currentMove currPlayer
-          then do gameWon currPlayer (length $ rows gameState)
-          else do
-            if currPlayer == 'X' 
-            then gameLoop gameState 'O'
-            else gameLoop gameState 'X'
-      else do 
-        putStrLn "\nThat position is already taken! Please select another one."
-        gameLoop prevMove currPlayer
-    else do
-      putStrLn "\nThat move is illegal! Please select another move."
-      gameLoop prevMove currPlayer
-
-  -- Play again function
-  playAgain dim = do
-    putStrLn "\nPlay again? [y]\n"
-    yn <- getChar
-    if not (toLower yn == 'y') then do
-      putStrLn "\n\nThanks for playing!\n"
-      return()
-       else do
-        putStrLn "\n\nHere's a new game, just for you!"
-        printGame $ emptyBoard dim
-        gameLoop (emptyBoard dim) 'X'
-
-  -- Game drawn function
-  gameDrawn dim = do 
-    putStrLn "\nGame drawn."
-    playAgain dim
-
-  -- Game won function
-  gameWon currPlayer dim = do
-    putStrLn $ "\nPlayer " ++ (show currPlayer) ++ " won!" 
-    playAgain dim    
-
-  -- Game Initialization
-  initialize :: IO()
-  initialize = do
-    putStrLn "\nPlease enter a number between 3 and 9\n"
-    dimensions <- getChar
-    if digitToInt dimensions < 3 
-      then do
-        putStrLn "Invalid number!" 
-        initialize
-      else do 
-      let newGame = emptyBoard $ digitToInt dimensions
-      putStrLn ""
-      printGame $ emptyBoard $ digitToInt dimensions
-      gameLoop newGame 'X'
-
-  
-  -- Main function
-  main :: IO()
-  main = initialize
-
-
-
--}
+  -- Gives all the blanks, if given a TicTacToe and its dimensions
+  blanks :: TicTacToe -> [Pos]
+  blanks (TicTacToe rr) =  [a | (a, b) <- p, isNothing b ] -- pick out the Nothings
+    where 
+      -- zip together the cartesian product of x and y and all the cells in the TicTacToe
+      idxs = [(x,y) | x <- [0..len], y <- [0..len]] 
+      rows = concat rr
+      p = idxs `zip` rows
+      len = length rr - 1

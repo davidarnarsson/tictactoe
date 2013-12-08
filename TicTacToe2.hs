@@ -98,7 +98,7 @@ isLegal game pos = if row > bsize || col > bsize || row < 0 || col < 0
 blanks :: Int -> TicTacToe -> [Pos]
 blanks dim (TicTacToe rr) =  [a | (a, b) <- p, isNothing b ] -- pick out the Nothings
   where 
-    -- zip together the cartesian product of x and y and all the cells in the Sudoku
+    -- zip together the cartesian product of x and y and all the cells in the TicTacToe
     idxs = [(x,y) | x <- [0..dim-1], y <- [0..dim-1]] 
     rows = concat rr
     p = idxs `zip` rows

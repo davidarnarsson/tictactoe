@@ -13,7 +13,7 @@ module Players.LocalPlayer where
     deriving (Show)
 
   instance Player LocalPlayer where 
-    iToken (LocalPlayer n t hdl) = t
+    iToken (LocalPlayer _ t _) = t
     iName (LocalPlayer n _ _) = n
     iMove = move
     iChooseSize = chooseSize
@@ -24,14 +24,14 @@ module Players.LocalPlayer where
 
 
   move :: LocalPlayer -> TicTacToe -> IO (Int, Int)
-  move lp@(LocalPlayer _ t hdl) ttt = do
-    mv <- SP.move (SP.SinglePlayer t) ttt
+  move lp@(LocalPlayer n t hdl) ttt = do
+    mv <- SP.move (SP.SinglePlayer n t) ttt
     (Move mv) `send` hdl
     return mv
 
   chooseSize :: LocalPlayer -> IO (Int)
-  chooseSize (LocalPlayer _ t hdl) = do 
-    sz <- SP.chooseSize (SP.SinglePlayer t)
+  chooseSize (LocalPlayer n t hdl) = do 
+    sz <- SP.chooseSize (SP.SinglePlayer n t)
     return sz
 
   receiveSize :: LocalPlayer -> Int -> IO ()
@@ -39,14 +39,15 @@ module Players.LocalPlayer where
     putStrLn $ "A size of " ++ show sz ++ " has been chosen."
 
   win :: LocalPlayer -> TicTacToe -> IO ()
-  win lp ttt = execSp lp ttt SP.win
+  win lp@(LocalPlayer n t hdl) ttt = do 
+    SP.win (SP.SinglePlayer n t) ttt
+    hClose hdl
     
   lose :: LocalPlayer -> TicTacToe -> IO ()
-  lose lp ttt = execSp lp ttt SP.lose
+  lose lp@(LocalPlayer n t hdl) ttt = do 
+    SP.lose (SP.SinglePlayer n t) ttt
+    hClose hdl
     
-  execSp :: LocalPlayer -> TicTacToe -> (SP.SinglePlayer -> TicTacToe -> IO ()) -> IO ()
-  execSp (LocalPlayer _ t hdl) ttt fn = do fn (SP.SinglePlayer t) ttt
-
   opponentMove :: LocalPlayer -> TicTacToe -> (Int, Int) -> IO ()
-  opponentMove (LocalPlayer _ t hdl) ttt mv = do 
-    SP.opponentMove (SP.SinglePlayer t) ttt mv 
+  opponentMove (LocalPlayer n t hdl) ttt mv = do 
+    SP.opponentMove (SP.SinglePlayer n t) ttt mv 

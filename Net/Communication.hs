@@ -29,7 +29,7 @@ module Net.Communication where
   receive :: Handle -> IO (Message)
   receive hdl = do 
     resp <- hGetLine hdl
-    let (Right msg) = parse resp in return msg
+    let msg = parse resp in return msg
 
   write :: Handle -> String -> IO () 
   write = hPutStrLn

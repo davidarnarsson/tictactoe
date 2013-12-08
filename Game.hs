@@ -2,38 +2,48 @@
 module Game where 
   import TicTacToe (TicTacToe(..), emptyBoard, update, isDrawn, win)
   import qualified Players.Player as P 
-  --import qualified Players.SinglePlayer as SP 
-  --import qualified Players.LocalPlayer as LP 
-  --import qualified Players.RemotePlayer as RP 
-  import Net.Server as NS (create)
-  import Net.Client as CS (join)
-  import System.IO (hClose)
+  import GameTypes.ServerGame as SG (create, cleanUp)
+  import GameTypes.ClientGame as CG (create, cleanUp)
+  import GameTypes.LocalGame as LG (create, cleanUp)
+  import GameTypes.AIGame as AI (create, cleanUp)
+  import System.IO (hClose, Handle(..))
   import qualified Control.Exception as E
   u = undefined
 
+  -- starts a local game
+  startLocalGame :: IO () 
+  startLocalGame = do 
+    putStrLn "Starting local game..."
+    startGame LG.create LG.cleanUp
 
-  startLocalGame = u
-
-  startAIGame = u
+  -- starts an AI game
+  startAIGame :: IO ()
+  startAIGame = do 
+    putStrLn "Starting AI game..."
+    startGame AI.create AI.cleanUp
 
   -- Starts a network game 
   startNetworkGame :: IO ()
   startNetworkGame = do 
     putStrLn "Starting network game..."
-    (lp, rp, hdl) <- NS.create
-    E.catch (do { initGameLoop lp rp ; hClose hdl })
-      (\(E.SomeException e) ->  hClose hdl )
-
+    startGame SG.create SG.cleanUp
+  
   -- joins a network game
-  joinNetworkGame :: String -> IO ()
-  joinNetworkGame host = do 
+  joinNetworkGame :: IO ()
+  joinNetworkGame = do 
     putStrLn "Joining network game..."
-    (lp, rp, hdl) <- CS.join host
-    E.catch (do { initGameLoop rp lp ; hClose hdl }) 
-      (\(E.SomeException e) -> hClose hdl ) 
+    startGame CG.create CG.cleanUp
 
-  initGameLoop :: (P.Player a, P.Player b) => a -> b -> IO ()
-  initGameLoop p1 p2 = do 
+  
+  startGame :: (P.Player a, P.Player b) => IO (a, b) -> ((a, b) -> IO()) -> IO ()
+  startGame create cleanUp = do 
+    players <- create
+    E.catch (do { initGameLoop players; cleanUp players })
+      (\(E.SomeException e) -> cleanUp players)
+  
+
+  initGameLoop :: (P.Player a, P.Player b) => (a, b) -> IO ()
+  initGameLoop (p1,p2) = do 
     mv <- P.iChooseSize p1  
     P.iReceiveSize p2 mv
     let ttt = emptyBoard mv
@@ -47,10 +57,10 @@ module Game where
     mv <- P.iMove playerA state
     let newState = update state mv (Just $ P.iToken playerA) 
 
-    if isDrawn newState then do
-      putStrLn "The game has drawn!"
-    else if win newState mv $ P.iToken playerA then do
+    if win newState mv $ P.iToken playerA then do
       P.iWin playerA newState
       P.iLose playerB newState
+    else if isDrawn newState then do
+      putStrLn "The game has drawn!"
     else 
       gameLoop newState playerB playerA

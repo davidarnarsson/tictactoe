@@ -3,21 +3,18 @@ module Players.SinglePlayer where
   import TicTacToe as T hiding (win)
   import Util
   
-  data SinglePlayer = SinglePlayer Token
+  data SinglePlayer = SinglePlayer String Token
     deriving Show
 
   instance Player SinglePlayer where 
-    iToken (SinglePlayer t) = t
-    iName _ = "You"
+    iToken (SinglePlayer _ t) = t
+    iName (SinglePlayer n _) = n
     iMove = move
     iChooseSize = chooseSize
     iWin = win
     iLose = lose
     iReceiveSize = receiveSize
     iOpponentMove = opponentMove
-
-  getPlayer :: Token -> SinglePlayer 
-  getPlayer t = SinglePlayer t
     
   move :: SinglePlayer -> TicTacToe -> IO (Int, Int)
   move pp ttt = do
@@ -45,7 +42,7 @@ module Players.SinglePlayer where
 
   chooseSize :: SinglePlayer -> IO Int
   chooseSize p = do
-    putStrLn "Please choose the size of the board: "
+    putStrLn "Please choose the size of the board:    "
     n <- fmap digitsToInt getLine
     if n <= 0 then do
       putStrLn "Illegal number, must be greater than 0"
@@ -54,15 +51,21 @@ module Players.SinglePlayer where
       return n
       
   win :: SinglePlayer -> TicTacToe -> IO ()
-  win lp ttt = do
-    putStrLn "Congrats, you won!"
+  win (SinglePlayer n t) ttt = do
+    putStrLn $ n ++ " wins!"
 
   lose :: SinglePlayer -> TicTacToe -> IO ()
-  lose lp ttt = do 
-    putStrLn "You lost!"
+  lose (SinglePlayer n t) ttt = do 
+    putStrLn $ n ++ " lost!"
 
   opponentMove :: SinglePlayer -> TicTacToe -> (Int, Int) -> IO ()
   opponentMove lp ttt (x, y) = do
     putStrLn $ "The opponent played " ++ show x ++ ", " ++ show y
     T.printGame ttt
     return ()
+
+  generatePlayer :: Token -> IO (SinglePlayer)
+  generatePlayer t = do 
+    putStrLn $ "Enter the name of player " ++ show t
+    n <- getLine
+    return (SinglePlayer n t)

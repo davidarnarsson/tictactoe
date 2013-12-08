@@ -38,10 +38,10 @@ module Players.RemotePlayer where
     (Size sz) `send` hdl
 
   win :: RemotePlayer -> TicTacToe -> IO ()
-  win = undefined
+  win _ _ = return ()
 
   lose :: RemotePlayer -> TicTacToe -> IO ()
-  lose = win
+  lose _ _ = return ()
 
   opponentMove :: RemotePlayer -> TicTacToe -> (Int, Int) -> IO ()
-  opponentMove (RemotePlayer n t hdl) ttt mv = undefined
+  opponentMove (RemotePlayer n t hdl) ttt mv = return ()
