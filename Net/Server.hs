@@ -23,6 +23,7 @@ module Net.Server where
       onJoined ln conn@(hdl, _, _) = do 
         (Hello name) <- receive hdl
         (Hello ln) `send` hdl
+        hFlush hdl
         let lp = (LocalPlayer ln X hdl) 
         let rm = (RemotePlayer name O hdl)
 

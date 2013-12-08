@@ -27,12 +27,12 @@ module Players.LocalPlayer where
   move lp@(LocalPlayer _ t hdl) ttt = do
     mv <- SP.move (SP.SinglePlayer t) ttt
     (Move mv) `send` hdl
+    hFlush hdl
     return mv
 
   chooseSize :: LocalPlayer -> IO (Int)
   chooseSize (LocalPlayer _ t hdl) = do 
     sz <- SP.chooseSize (SP.SinglePlayer t)
-    --(Size sz) `send` hdl
     return sz
 
   receiveSize :: LocalPlayer -> Int -> IO ()
@@ -42,11 +42,9 @@ module Players.LocalPlayer where
   win :: LocalPlayer -> TicTacToe -> IO ()
   win lp ttt = execSp lp ttt SP.win
     
-
   lose :: LocalPlayer -> TicTacToe -> IO ()
   lose lp ttt = execSp lp ttt SP.lose
     
-
   execSp :: LocalPlayer -> TicTacToe -> (SP.SinglePlayer -> TicTacToe -> IO ()) -> IO ()
   execSp (LocalPlayer _ t hdl) ttt fn = do fn (SP.SinglePlayer t) ttt
 

@@ -3,7 +3,7 @@
 module Net.Client where 
   import Net.Communication (send, connect, receive)
   import Net.Protocol (Message(..), parse, serialize)
-  import System.IO (Handle(..), hClose)
+  import System.IO (Handle(..), hClose, hFlush)
   import Network (HostName)
   import Players.LocalPlayer
   import Players.RemotePlayer
@@ -17,6 +17,7 @@ module Net.Client where
     oPlayer <- getLine 
 
     (Hello oPlayer) `send` hdl
+    hFlush hdl
     (Hello xPlayer) <- receive hdl
 
     return ((LocalPlayer oPlayer O hdl), (RemotePlayer xPlayer X hdl), hdl)

@@ -36,6 +36,7 @@ module Players.RemotePlayer where
   receiveSize :: RemotePlayer -> Int -> IO ()
   receiveSize (RemotePlayer n t hdl) sz = do
     (Size sz) `send` hdl
+    hFlush hdl
 
   win :: RemotePlayer -> TicTacToe -> IO ()
   win = undefined
