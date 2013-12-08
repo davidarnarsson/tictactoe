@@ -1,62 +1,24 @@
 
 
 module Net.Client where 
-  import Net.Communication (send, connect, receive, hClose)
+  import Net.Communication (send, connect, receive)
   import Net.Protocol (Message(..), parse, serialize)
-  import System.IO (Handle(..))
+  import System.IO (Handle(..), hClose)
   import Network (HostName)
-  import Control.Exception
-  import TicTacToe (isLegal, emptyBoard, isBlank, update, win, printGame, isDrawn, playerMove)
+  import Players.LocalPlayer
+  import Players.RemotePlayer
+  import TicTacToe (TicTacToe(..), Token(..))
   import Util (getMove)
 
-  join :: String -> IO (Handle)
+  join :: HostName -> IO (LocalPlayer, RemotePlayer, Handle)
   join host = do 
-    putStrLn $ "Joining host " ++ host ++ " ..."
-    connect host 2222 
-    
-  
-  startClientGame :: HostName -> IO () 
-  startClientGame host = do 
+    hdl <- connect host 2222 
     putStrLn "What's your name?"
     oPlayer <- getLine 
-    sHdl <- join host 
 
-    (Hello oPlayer) `send` sHdl
-    resp <- receive sHdl
+    (Hello oPlayer) `send` hdl
+    (Hello xPlayer) <- receive hdl
 
-    putStrLn $ "Received: " ++ show resp 
-    
-    (Size dim) <- receive sHdl
-
-    let newGame = emptyBoard dim
-    
-    loop newGame sHdl
-
-    return ()
+    return ((LocalPlayer oPlayer O hdl), (RemotePlayer xPlayer X hdl), hdl)
   
-  loop state hdl = do 
-    printGame state
-
-    (Move move) <- receive hdl    
-    putStrLn "Player X moves: "
-    let newState = update state move (Just 'X')
-    printGame newState
-    if isDrawn newState then do
-      putStrLn "Game drawn"
-    else if win newState move 'X' then do
-      putStrLn "You loooost!"
-    else do
-      oMove <- playerMove newState
-
-      (Move oMove) `send` hdl
-
-      let newerState = update newState oMove (Just 'O')
-      printGame newerState
-        
-      if isDrawn newerState then do
-        putStrLn "Game drawn"
-      else if win newerState oMove 'O' then do
-        putStrLn "You won! Grats!"
-      else 
-        loop newerState hdl
-
+  

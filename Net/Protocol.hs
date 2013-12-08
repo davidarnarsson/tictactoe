@@ -11,7 +11,6 @@ module Net.Protocol where
   data Message = Move (Int, Int) | Hello String | Size Int | Goodbye 
     deriving (Eq, Show)
 
-
   parseMove :: GenParser Char st (Int, Int)
   parseMove = do
     string "Move" *> spaces *> char '('

@@ -15,20 +15,24 @@ module TicTacToe where
   import Data.List
   import Data.Maybe
   import Util
+  import System.IO
   
-  data TicTacToe = TicTacToe { rows :: [[Maybe Char]] }
+  data TicTacToe = TicTacToe { rows :: [[Maybe Token]] }
    deriving (Show, Eq)
+
+  data Token = X | O 
+    deriving (Eq, Show)
 
   type Pos = (Int,Int)
 
-  testBoard = TicTacToe [[Nothing,Just 'X',Nothing,Just 'X'],
+ {- testBoard = TicTacToe [[Nothing,Just 'X',Nothing,Just 'X'],
                          [Just 'O',Just 'X',Just 'X',Just 'X'],
                          [Nothing,Just 'X',Just 'X',Just 'X'],
                          [Nothing,Nothing,Nothing,Just 'X']]
 
   testBoard2 = TicTacToe [[Just 'X',Just 'O',Just 'X'],
                          [Just 'X',Just 'O',Just 'X'],
-                         [Just 'X',Just 'O',Just 'X']]
+                         [Just 'X',Just 'O',Just 'X']]-}
 
   -- Resets the game
   emptyBoard :: Int -> TicTacToe
@@ -40,7 +44,8 @@ module TicTacToe where
     putStr $ "\n" ++ concat [ [ char c | c <- r ] ++"\n" | r <- rs]
       where
         char Nothing = '.'
-        char (Just c) = c
+        char (Just X) = 'X'
+        char (Just O) = 'O'
 
   -- Checks whether a slot is blank or not
   isBlank :: TicTacToe -> Pos -> Bool
@@ -52,18 +57,23 @@ module TicTacToe where
   isDrawn gameState =  all (==True) [isJust x | x <- concat $ rows gameState]
 
   -- Determines whether the game has been won by a player or not
-  win :: TicTacToe -> (Int, Int) -> Char -> Bool
-  win gameState currentMove currPlayer = row || col || dia
+  win :: TicTacToe -> (Int, Int) -> Token -> Bool
+  win gameState currentMove currPlayer = row || col || dia1 || dia2
     where
       bsize = length $ rows gameState
       row = bsize == length [a | (Just a) <- 
               filter (==Just currPlayer) (rows gameState !! (fst currentMove))]
       col = bsize == length [a | (Just a) <- 
               filter (==Just currPlayer) (transpose (rows gameState) !! (snd currentMove))]
-      dia = bsize == length [a | (Just a) <- 
+      dia1 = bsize == length [a | (Just a) <- 
               filter (==Just currPlayer) (diag (rows gameState))]
-        where
-          diag xs = [xs!!n!!n | n <- [0..length xs-1]]
+      dia2 = bsize == length [a | (Just a) <- 
+              filter (==Just currPlayer) (diag (reverse (rows gameState)))]
+
+  -- Gets the diagonal line
+  diag :: [[t]] -> [t]
+  diag xs = [xs!!n!!n | n <- [0..length xs-1]]
+
 
   -- Updates a list if given a tuple which has: a new value and its index
   (!!=) :: [a] -> (Int,a) -> [a]
@@ -74,7 +84,7 @@ module TicTacToe where
                                           | otherwise = take 1 list ++ fixList (drop 1 list) (index, value) (current+1)
 
   -- Updates a TicTacToe if given a new value and a position for that value
-  update :: TicTacToe -> Pos -> Maybe Char -> TicTacToe
+  update :: TicTacToe -> Pos -> Maybe Token -> TicTacToe
   update (TicTacToe tic) p c = TicTacToe $ rot tic p c
     where 
       rot (r:rr) (0, y) c = (r !!= (y, c)):rr
@@ -90,9 +100,11 @@ module TicTacToe where
         row = fst pos
         col = snd pos
 
-  --------------------------------------------------------------------------
+  {--------------------------------------------------------------------------
   -- IO Stuff:
   --------------------------------------------------------------------------
+
+
 
   -- The Game loop!
   gameLoop :: TicTacToe -> Char -> IO()
@@ -155,23 +167,11 @@ module TicTacToe where
       printGame $ emptyBoard $ digitToInt dimensions
       gameLoop newGame 'X'
 
-  playerMove :: TicTacToe -> IO ((Int, Int))
-  playerMove state = do 
-    mv <- getMove
-    case mv of 
-      (Left e) -> do rc
-      (Right oMove) -> do
-                  if (isLegal state oMove) && (isBlank state oMove) then do
-                    return oMove
-                  else rc
-    where 
-      rc = do
-        putStrLn "Illegal move, please try again!"
-        playerMove state 
-
+  
   -- Main function
   main :: IO()
   main = initialize
 
 
 
+-}

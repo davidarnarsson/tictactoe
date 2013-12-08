@@ -12,9 +12,6 @@ module Net.Communication where
   close :: Socket -> IO () 
   close = sClose
 
-  hClose :: Handle -> IO () 
-  hClose = IO.hClose
-
   open :: Int -> IO Socket
   open = listenOn2
 
@@ -51,19 +48,3 @@ module Net.Communication where
     bindSocket sock (SockAddrInet (fromIntegral port) iNADDR_ANY)
     listen sock maxListenQueue
     return sock
-
-
-    
- {-- handleConnection :: (Handle, HostName, PortNumber) -> IO () 
-  handleConnection conn@(hdl, host, port) = do
-    write hdl "Hello!"
-    resp <- hGetLine hdl
-    putStrLn $ "Client said: " ++ resp
-    putStrLn $ "Continue?" 
-    c <- fmap read getLine
-    case c of 
-      1 -> handleConnection conn
-      _ -> do 
-        hClose hdl
-        return ()
-  --}
