@@ -27,7 +27,6 @@ module Players.LocalPlayer where
   move lp@(LocalPlayer _ t hdl) ttt = do
     mv <- SP.move (SP.SinglePlayer t) ttt
     (Move mv) `send` hdl
-    hFlush hdl
     return mv
 
   chooseSize :: LocalPlayer -> IO (Int)

@@ -24,6 +24,7 @@ module Net.Communication where
   send :: Message -> Handle -> IO ()
   send msg hdl = do
     write hdl $ serialize msg
+    hFlush hdl
 
   receive :: Handle -> IO (Message)
   receive hdl = do 

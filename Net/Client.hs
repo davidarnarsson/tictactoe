@@ -17,7 +17,6 @@ module Net.Client where
     oPlayer <- getLine 
 
     (Hello oPlayer) `send` hdl
-    hFlush hdl
     (Hello xPlayer) <- receive hdl
 
     return ((LocalPlayer oPlayer O hdl), (RemotePlayer xPlayer X hdl), hdl)

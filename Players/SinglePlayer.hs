@@ -45,6 +45,7 @@ module Players.SinglePlayer where
 
   chooseSize :: SinglePlayer -> IO Int
   chooseSize p = do
+    putStrLn "Please choose the size of the board: "
     n <- fmap digitsToInt getLine
     if n <= 0 then do
       putStrLn "Illegal number, must be greater than 0"
