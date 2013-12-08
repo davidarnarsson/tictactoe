@@ -8,7 +8,7 @@ module Game where
   import Net.Server as NS (create)
   import Net.Client as CS (join)
   import System.IO (hClose)
-  import Control.Exception
+  import qualified Control.Exception as E
   u = undefined
 
 
@@ -21,16 +21,16 @@ module Game where
   startNetworkGame = do 
     putStrLn "Starting network game..."
     (lp, rp, hdl) <- NS.create
-    catch (do { initGameLoop lp rp ; hClose hdl })
-      (\(SomeException e) ->  hClose hdl )
+    E.catch (do { initGameLoop lp rp ; hClose hdl })
+      (\(E.SomeException e) ->  hClose hdl )
 
   -- joins a network game
   joinNetworkGame :: String -> IO ()
   joinNetworkGame host = do 
     putStrLn "Joining network game..."
     (lp, rp, hdl) <- CS.join host
-    catch (do { initGameLoop rp lp ; hClose hdl }) 
-      (\(SomeException e) -> hClose hdl ) 
+    E.catch (do { initGameLoop rp lp ; hClose hdl }) 
+      (\(E.SomeException e) -> hClose hdl ) 
 
   initGameLoop :: (P.Player a, P.Player b) => a -> b -> IO ()
   initGameLoop p1 p2 = do 
