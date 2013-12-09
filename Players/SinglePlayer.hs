@@ -54,7 +54,7 @@ module Players.SinglePlayer where
   lose :: SinglePlayer -> TicTacToe -> IO ()
   lose (SinglePlayer n t) ttt = do 
     putStrLn $ n ++ " lost!"
-    
+
   generatePlayer :: Token -> IO (SinglePlayer)
   generatePlayer t = do 
     putStrLn $ "Enter the name of player " ++ show t
