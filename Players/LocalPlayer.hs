@@ -21,7 +21,6 @@ module Players.LocalPlayer where
     iReceiveSize = receiveSize
     iWin = win
     iLose = lose
-    iOpponentMove = opponentMove
 
 
   move :: LocalPlayer -> TicTacToe -> IO Pos
@@ -49,6 +48,3 @@ module Players.LocalPlayer where
     SP.lose (SP.SinglePlayer n t) ttt
     hClose hdl
     
-  opponentMove :: LocalPlayer -> TicTacToe -> Pos -> IO ()
-  opponentMove (LocalPlayer n t hdl _) ttt mv = do 
-    SP.opponentMove (SP.SinglePlayer n t) ttt mv 

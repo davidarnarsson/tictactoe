@@ -8,7 +8,6 @@ module Game where
   import GameTypes.AIGame as AI (create, cleanUp)
   import System.IO (hClose, Handle(..))
   import qualified Control.Exception as E
-  u = undefined
 
   -- starts a local game
   startLocalGame :: IO () 
@@ -19,7 +18,7 @@ module Game where
   -- starts an AI game
   startAIGame :: IO ()
   startAIGame = do 
-    putStrLn "Starting AI game..."
+    putStrLn "\nStarting AI game..."
     startGame AI.create AI.cleanUp
 
   -- Starts a network game 
@@ -77,8 +76,8 @@ module Game where
   -- the game state, as well as end states.
   gameLoop :: (P.Player a, P.Player b) => TicTacToe -> a -> b -> IO()
   gameLoop state playerA playerB = do
-    putStr $ "\nPlayer " ++ (P.iName playerA) ++ ": \n"
     printGame state
+    putStr $ "\nPlayer " ++ (P.iName playerA) ++ ": \n"
     mv <- P.iMove playerA state
     let newState = update state mv (Just $ P.iToken playerA) 
     

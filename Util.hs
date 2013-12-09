@@ -14,7 +14,7 @@ module Util where
   -- Parses a move made by a player
   getMove :: IO (Either ParseError (Int, Int))
   getMove = do
-    putStrLn "Enter a move: "
+    putStr "Enter a move: "
     move <- getLine
     return $ parse parseM "" move 
 

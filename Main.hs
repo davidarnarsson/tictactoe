@@ -3,6 +3,7 @@ module Main where
   import Control.Exception 
   import Game (startLocalGame, startNetworkGame, joinNetworkGame, startAIGame)
   import Util (getInt)
+  import Data.Char
 
   menuLoop :: IO ()
   menuLoop = do 
@@ -12,28 +13,29 @@ module Main where
     putStrLn "2. Connect to a LAN game"
     putStrLn "3. Play against AI"
     putStrLn "4. Play 1v1 locally"
-    putStrLn "5. Quit"
+    putStrLn "5. Quit\n"
 
-    opt <- getInt
+    opt2 <- getChar
+    let opt = digitToInt $ opt2
 
     case opt of 
-      1 -> do putStrLn "Starting a LAN game..."
+      1 -> do putStrLn "\nStarting a LAN game..."
               startNetworkGame
               menuLoop
-      2 -> do putStrLn "Joining a LAN game..."
+      2 -> do putStrLn "\nJoining a LAN game..."
               joinNetworkGame
               menuLoop
       3 -> do startAIGame
               menuLoop
-      4 -> do putStrLn "Creating local game"
+      4 -> do putStrLn "\nCreating local game"
               startLocalGame
               menuLoop
-      5 -> do putStrLn "You quit!"
-      _ -> do putStrLn "Invalid choice! Choose again!" 
+      5 -> do putStrLn "\nYou quit!"
+      _ -> do putStrLn "\nInvalid choice! Choose again!" 
               menuLoop
 --lalala
 
   main :: IO () 
   main = withSocketsDo $ do 
-    putStrLn "Tic Tac Toe v0.01"
+    putStrLn "\nTic Tac Toe v0.01"
     menuLoop
