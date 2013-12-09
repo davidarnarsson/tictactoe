@@ -6,15 +6,16 @@ module Players.LocalPlayer where
   import System.IO
   import Net.Protocol
   import Net.Communication
+  import Network.Socket hiding (send)
   import qualified Players.SinglePlayer as SP 
 
   -- Local player (name, X or O, Network pipe)
-  data LocalPlayer = LocalPlayer String Token Handle 
+  data LocalPlayer = LocalPlayer String Token Handle (Maybe Socket)
     deriving (Show)
 
   instance Player LocalPlayer where 
-    iToken (LocalPlayer _ t _) = t
-    iName (LocalPlayer n _ _) = n
+    iToken (LocalPlayer _ t _ _) = t
+    iName (LocalPlayer n _ _ _) = n
     iMove = move
     iChooseSize = chooseSize
     iReceiveSize = receiveSize
@@ -23,14 +24,14 @@ module Players.LocalPlayer where
     iOpponentMove = opponentMove
 
 
-  move :: LocalPlayer -> TicTacToe -> IO (Int, Int)
-  move lp@(LocalPlayer n t hdl) ttt = do
+  move :: LocalPlayer -> TicTacToe -> IO Pos
+  move lp@(LocalPlayer n t hdl _) ttt = do
     mv <- SP.move (SP.SinglePlayer n t) ttt
     (Move mv) `send` hdl
     return mv
 
   chooseSize :: LocalPlayer -> IO (Int)
-  chooseSize (LocalPlayer n t hdl) = do 
+  chooseSize (LocalPlayer n t hdl _) = do 
     sz <- SP.chooseSize (SP.SinglePlayer n t)
     return sz
 
@@ -39,15 +40,15 @@ module Players.LocalPlayer where
     putStrLn $ "A size of " ++ show sz ++ " has been chosen."
 
   win :: LocalPlayer -> TicTacToe -> IO ()
-  win lp@(LocalPlayer n t hdl) ttt = do 
+  win lp@(LocalPlayer n t hdl _) ttt = do 
     SP.win (SP.SinglePlayer n t) ttt
     hClose hdl
     
   lose :: LocalPlayer -> TicTacToe -> IO ()
-  lose lp@(LocalPlayer n t hdl) ttt = do 
+  lose lp@(LocalPlayer n t hdl _) ttt = do 
     SP.lose (SP.SinglePlayer n t) ttt
     hClose hdl
     
-  opponentMove :: LocalPlayer -> TicTacToe -> (Int, Int) -> IO ()
-  opponentMove (LocalPlayer n t hdl) ttt mv = do 
+  opponentMove :: LocalPlayer -> TicTacToe -> Pos -> IO ()
+  opponentMove (LocalPlayer n t hdl _) ttt mv = do 
     SP.opponentMove (SP.SinglePlayer n t) ttt mv 

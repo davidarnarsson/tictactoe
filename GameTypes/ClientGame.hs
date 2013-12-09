@@ -27,6 +27,6 @@ module GameTypes.ClientGame where
     (Hello oPlayer) `send` hdl
     (Hello xPlayer) <- receive hdl
 
-    return ((RemotePlayer xPlayer X hdl), (LocalPlayer oPlayer O hdl))
+    return ((RemotePlayer xPlayer X hdl), (LocalPlayer oPlayer O hdl Nothing))
   
   
