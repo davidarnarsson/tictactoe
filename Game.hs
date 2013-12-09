@@ -1,6 +1,6 @@
 
 module Game where 
-  import TicTacToe (TicTacToe(..), emptyBoard, update, isDrawn, win)
+  import TicTacToe (TicTacToe(..), Token(..), emptyBoard, update, isDrawn, win)
   import qualified Players.Player as P 
   import GameTypes.ServerGame as SG (create, cleanUp)
   import GameTypes.ClientGame as CG (create, cleanUp)
