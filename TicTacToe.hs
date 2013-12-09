@@ -40,12 +40,29 @@ module TicTacToe where
 
   -- Prints out the current game position
   printGame :: TicTacToe -> IO ()
+  printGame tic = do printLines (rows tic)
+    where
+      printLines [] = do putStrLn ""
+      printLines (x:xs) = do printRow x 
+                             printLines xs
+
+  -- Helper function for printGame
+  --printRow :: [Maybe Char] -> IO ()
+  printRow [] = do putStrLn ""
+  printRow (x:xs) = do putStr (charsPrint x)
+                       printRow xs  
+                         where
+                           charsPrint Nothing = " . |"
+                           charsPrint (Just x) = " " ++ show x ++ " |"
+
+  {- Old printGame function
+  printGame :: TicTacToe -> IO ()
   printGame (TicTacToe rs) =
     putStr $ "\n" ++ concat [ [ char c | c <- r ] ++"\n" | r <- rs]
       where
         char Nothing = '.'
         char (Just X) = 'X'
-        char (Just O) = 'O'
+        char (Just O) = 'O' -}
 
   -- Checks whether a slot is blank or not
   isBlank :: TicTacToe -> Pos -> Bool
