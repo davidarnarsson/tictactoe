@@ -17,9 +17,7 @@ module Players.SinglePlayer where
     iOpponentMove = opponentMove
     
   move :: SinglePlayer -> TicTacToe -> IO (Int, Int)
-  move pp ttt = do
-    T.printGame ttt
-    playerMove ttt 
+  move pp ttt = playerMove ttt 
 
   playerMove :: TicTacToe -> IO ((Int, Int))
   playerMove state = do 

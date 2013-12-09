@@ -1,6 +1,6 @@
 
 module Game where 
-  import TicTacToe (TicTacToe(..), emptyBoard, update, isDrawn, win)
+  import TicTacToe (TicTacToe(..), emptyBoard, update, isDrawn, win, printGame)
   import qualified Players.Player as P 
   import GameTypes.ServerGame as SG (create, cleanUp)
   import GameTypes.ClientGame as CG (create, cleanUp)
@@ -52,11 +52,12 @@ module Game where
   
   gameLoop :: (P.Player a, P.Player b) => TicTacToe -> a -> b -> IO()
   gameLoop state playerA playerB = do
-    putStr $ "\nPlayer " ++ (P.iName playerA) ++ ": "
-    
+    putStr $ "\nPlayer " ++ (P.iName playerA) ++ ": \n"
+    printGame state
     mv <- P.iMove playerA state
     let newState = update state mv (Just $ P.iToken playerA) 
-
+    
+    
     if win newState mv $ P.iToken playerA then do
       P.iWin playerA newState
       P.iLose playerB newState
