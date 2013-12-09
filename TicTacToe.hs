@@ -1,14 +1,3 @@
-{- 
-TO DO:
-
-Nostra adeins vid kodann: Fjarlaegja tvitekningar, laga syntax, gera meira elegant, o.fl.
-Seta upp data structures fyrir fleiri hluti (t.d. í stað 'X' og 'O' chars þá data Player = X | O)
-Bua til quit function til ad haetta i leiknum
-Bua til functions sem lata tolvu spila a moti spilara
-Fixa textaframsetningu leiksins
-Birta i terminal leyfilega leiki ef spilari gefur ologlegt input (random string, ologlegan leik, ..)
--}
-
 module TicTacToe where
   import Test.QuickCheck
   import Data.Char
@@ -25,44 +14,14 @@ module TicTacToe where
 
   type Pos = (Int,Int)
 
- {- testBoard = TicTacToe [[Nothing,Just 'X',Nothing,Just 'X'],
-                         [Just 'O',Just 'X',Just 'X',Just 'X'],
-                         [Nothing,Just 'X',Just 'X',Just 'X'],
-                         [Nothing,Nothing,Nothing,Just 'X']]
-
-  testBoard2 = TicTacToe [[Just 'X',Just 'O',Just 'X'],
-                         [Just 'X',Just 'O',Just 'X'],
-                         [Just 'X',Just 'O',Just 'X']]-}
-
   -- Resets the game
   emptyBoard :: Int -> TicTacToe
   emptyBoard dim = TicTacToe [ [ Nothing | _ <- [1..dim] ] | _ <- [1..dim] ]
 
-  -- Prints out the current game position
-  printGame :: TicTacToe -> IO ()
-  printGame tic = do printLines (rows tic)
-    where
-      printLines [] = do putStrLn ""
-      printLines (x:xs) = do printRow x 
-                             printLines xs
-
-  -- Helper function for printGame
-  --printRow :: [Maybe Char] -> IO ()
-  printRow [] = do putStrLn ""
-  printRow (x:xs) = do putStr (charsPrint x)
-                       printRow xs  
-                         where
-                           charsPrint Nothing = " . |"
-                           charsPrint (Just x) = " " ++ show x ++ " |"
-
-  {- Old printGame function
-  printGame :: TicTacToe -> IO ()
-  printGame (TicTacToe rs) =
-    putStr $ "\n" ++ concat [ [ char c | c <- r ] ++"\n" | r <- rs]
-      where
-        char Nothing = '.'
-        char (Just X) = 'X'
-        char (Just O) = 'O' -}
+  -- Property for emptyBoard. Running quickCheck(prop_emptyBoard) returns the following:
+  -- +++ OK, passed 100 tests.
+  prop_emptyBoard n = all (isNothing) [ x | x  <- (concat $ rows $ emptyBoard n')]
+    where n' = n `mod` 1000 
 
   -- Checks whether a slot is blank or not
   isBlank :: TicTacToe -> Pos -> Bool
@@ -116,6 +75,7 @@ module TicTacToe where
         bsize = length (rows game)-1
         row = fst pos
         col = snd pos
+
   -- Gives all the blanks, if given a TicTacToe and its dimensions
   blanks :: TicTacToe -> [Pos]
   blanks (TicTacToe rr) =  [a | (a, b) <- p, isNothing b ] -- pick out the Nothings

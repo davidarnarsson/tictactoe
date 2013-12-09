@@ -1,6 +1,6 @@
 
 module Game where 
-  import TicTacToe (TicTacToe(..), emptyBoard, update, isDrawn, win, printGame)
+  import TicTacToe (TicTacToe(..), emptyBoard, update, isDrawn, win)
   import qualified Players.Player as P 
   import GameTypes.ServerGame as SG (create, cleanUp)
   import GameTypes.ClientGame as CG (create, cleanUp)
@@ -34,6 +34,24 @@ module Game where
     putStrLn "Joining network game..."
     startGame CG.create CG.cleanUp
 
+  -- Prints out the current game position
+  printGame :: TicTacToe -> IO ()
+  printGame tic = do printLines (rows tic)
+    where
+      printLines [] = do putStrLn ""
+      printLines (x:xs) = do printRow x 
+                             printLines xs
+
+  -- Helper function for printGame
+  printRow :: [Maybe Token] -> IO ()
+  printRow [] = do putStrLn ""
+  printRow (x:xs) = do putStr (charsPrint x)
+                       printRow xs  
+                         where
+                           charsPrint Nothing = " . |"
+                           charsPrint (Just x) = " " ++ show x ++ " |"
+
+  
   -- Given a tuple of players and a clean up function 
   -- starts a game of tic tac toe .   
   startGame :: (P.Player a, P.Player b) => IO (a, b) -> ((a, b) -> IO()) -> IO ()
