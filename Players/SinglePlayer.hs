@@ -59,8 +59,6 @@ module Players.SinglePlayer where
   opponentMove :: SinglePlayer -> TicTacToe -> (Int, Int) -> IO ()
   opponentMove lp ttt (x, y) = do
     putStrLn $ "The opponent played " ++ show x ++ ", " ++ show y
-    T.printGame ttt
-    return ()
 
   generatePlayer :: Token -> IO (SinglePlayer)
   generatePlayer t = do 
