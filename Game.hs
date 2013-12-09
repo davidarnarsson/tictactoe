@@ -66,6 +66,7 @@ module Game where
   -- information and firing up the game loop.
   initGameLoop :: (P.Player a, P.Player b) => (a, b) -> IO ()
   initGameLoop (p1,p2) = do 
+    putStrLn "Waiting for size..."
     mv <- P.iChooseSize p1  
     P.iReceiveSize p2 mv
     let ttt = emptyBoard mv
