@@ -34,14 +34,18 @@ module Game where
     putStrLn "Joining network game..."
     startGame CG.create CG.cleanUp
 
-  
+  -- Given a tuple of players and a clean up function 
+  -- starts a game of tic tac toe .   
   startGame :: (P.Player a, P.Player b) => IO (a, b) -> ((a, b) -> IO()) -> IO ()
   startGame create cleanUp = do 
     players <- create
     E.catch (do { initGameLoop players; cleanUp players })
-      (\(E.SomeException e) -> cleanUp players)
+      (\(E.SomeException e) -> do
+        putStrLn "An error occurred! Cleaning up!"
+        cleanUp players)
   
-
+  -- initiates the game by making the players exchange board size
+  -- information and firing up the game loop.
   initGameLoop :: (P.Player a, P.Player b) => (a, b) -> IO ()
   initGameLoop (p1,p2) = do 
     mv <- P.iChooseSize p1  
@@ -50,13 +54,14 @@ module Game where
 
     gameLoop ttt p1 p2
   
+  -- The game loop. Handles the interaction between players and manages
+  -- the game state, as well as end states.
   gameLoop :: (P.Player a, P.Player b) => TicTacToe -> a -> b -> IO()
   gameLoop state playerA playerB = do
     putStr $ "\nPlayer " ++ (P.iName playerA) ++ ": \n"
     printGame state
     mv <- P.iMove playerA state
     let newState = update state mv (Just $ P.iToken playerA) 
-    
     
     if win newState mv $ P.iToken playerA then do
       P.iWin playerA newState

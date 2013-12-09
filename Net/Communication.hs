@@ -9,28 +9,31 @@ module Net.Communication where
 
   -- http://hackage.haskell.org/package/network-2.4.2.1/docs/Network.html
 
-  close :: Socket -> IO () 
-  close = sClose
-
+  -- opens a server socket
   open :: Int -> IO Socket
   open = listenOn2
 
+  -- connects to a host on a port
   connect :: String -> Int -> IO Handle
   connect host port = connectTo host $ (PortNumber . fromIntegral) port
 
+  -- Accepts a connection to a socket
   accept :: Socket -> IO (Handle, HostName, PortNumber)
   accept = Network.accept
 
+  -- Sends a message to a handle 
   send :: Message -> Handle -> IO ()
   send msg hdl = do
     write hdl $ serialize msg
     hFlush hdl
 
+  -- Receives a message from a handle
   receive :: Handle -> IO (Message)
   receive hdl = do 
     resp <- hGetLine hdl
     let msg = parse resp in return msg
 
+  -- Writes a string to a handle
   write :: Handle -> String -> IO () 
   write = hPutStrLn
     

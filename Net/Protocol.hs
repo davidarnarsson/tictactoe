@@ -1,9 +1,6 @@
 
--- This is in part based on the JSON parser illustrated
--- in the Real World Haskell book. 
---http://book.realworldhaskell.org/read/using-parsec.html
-module Net.Protocol where 
-
+module Net.Protocol where   
+  import Test.QuickCheck
   -- The protocol used : 
   {-
     Move (Int, Int) -> Represents player move on a 0-idxd grid
@@ -24,3 +21,18 @@ module Net.Protocol where
   serialize :: Message -> String 
   serialize = show
 
+  instance Arbitrary Message where 
+    arbitrary = oneof [ do
+                          x <- arbitrary
+                          y <- arbitrary
+                          return $ Move (x, y)
+                      , do 
+                          str <- arbitrary 
+                          return $ Hello str
+                      , do
+                          x <- arbitrary
+                          return $ Size x
+                      , return Goodbye ]
+
+  -- Unsurprisingly, returns +++ OK, passed 100 tests. 
+  prop_parse msg = msg == (parse . serialize) msg
