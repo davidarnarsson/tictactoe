@@ -14,7 +14,6 @@ module Players.SinglePlayer where
     iWin = win
     iLose = lose
     iReceiveSize = receiveSize
-    iOpponentMove = opponentMove
     
   move :: SinglePlayer -> TicTacToe -> IO (Int, Int)
   move pp ttt = playerMove ttt 
@@ -55,11 +54,7 @@ module Players.SinglePlayer where
   lose :: SinglePlayer -> TicTacToe -> IO ()
   lose (SinglePlayer n t) ttt = do 
     putStrLn $ n ++ " lost!"
-
-  opponentMove :: SinglePlayer -> TicTacToe -> (Int, Int) -> IO ()
-  opponentMove lp ttt (x, y) = do
-    putStrLn $ "The opponent played " ++ show x ++ ", " ++ show y
-
+    
   generatePlayer :: Token -> IO (SinglePlayer)
   generatePlayer t = do 
     putStrLn $ "Enter the name of player " ++ show t

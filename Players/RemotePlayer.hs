@@ -18,8 +18,6 @@ module Players.RemotePlayer where
     iReceiveSize = receiveSize
     iWin = win
     iLose = lose
-    iOpponentMove = opponentMove
-
 
   move :: RemotePlayer -> TicTacToe -> IO (Int, Int)
   move (RemotePlayer n t hdl) _ = do
@@ -42,6 +40,3 @@ module Players.RemotePlayer where
 
   lose :: RemotePlayer -> TicTacToe -> IO ()
   lose _ _ = return ()
-
-  opponentMove :: RemotePlayer -> TicTacToe -> (Int, Int) -> IO ()
-  opponentMove (RemotePlayer n t hdl) ttt mv = return ()

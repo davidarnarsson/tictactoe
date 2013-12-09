@@ -15,7 +15,6 @@ module Players.AIPlayer where
     iReceiveSize = receiveSize
     iWin = win
     iLose = lose
-    iOpponentMove = opponentMove
 
 
   move :: AIPlayer -> TicTacToe -> IO (Int, Int)
@@ -37,6 +36,3 @@ module Players.AIPlayer where
 
   lose :: AIPlayer -> TicTacToe -> IO ()
   lose p t = return ()
-
-  opponentMove :: AIPlayer -> TicTacToe -> (Int, Int) -> IO ()
-  opponentMove p t mv = return ()
