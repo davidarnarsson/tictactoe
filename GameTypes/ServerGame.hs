@@ -6,14 +6,15 @@ module GameTypes.ServerGame where
   import Players.RemotePlayer (RemotePlayer(..))
   import Players.LocalPlayer (LocalPlayer(..))
   import Network (HostName)
-  import Network.Socket (close, Socket(..))
+  import Network.Socket (sClose, Socket(..))
   import System.IO
   import TicTacToe (Token(..), TicTacToe(..))
 
+  -- closes the client handle and the server socket
   cleanUp :: (LocalPlayer, RemotePlayer) -> IO ()
   cleanUp ((LocalPlayer n t hdl (Just sock)), _) = do
     hClose hdl
-    close sock
+    sClose sock
 
   -- initiates communication between a server and a
   -- client by opening a server socket, and accepting
