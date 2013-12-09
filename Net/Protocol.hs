@@ -10,7 +10,7 @@ module Net.Protocol where
                        client, immediately after the hello 
     Goodbye         -> As of now, not used...
   -}
-  data Message = Move (Int, Int) | Hello String | Size Int | Goodbye 
+  data Message = Move (Int, Int) | Hello String | Size Int 
     deriving (Eq, Show, Read)
 
   -- parses a string into a Message, or an error
@@ -31,8 +31,7 @@ module Net.Protocol where
                           return $ Hello str
                       , do
                           x <- arbitrary
-                          return $ Size x
-                      , return Goodbye ]
+                          return $ Size x ]
 
   -- Unsurprisingly, returns +++ OK, passed 100 tests. 
   prop_parse msg = msg == (parse . serialize) msg

@@ -2,6 +2,7 @@ module Main where
   import Network.Socket (withSocketsDo)
   import Control.Exception 
   import Game (startLocalGame, startNetworkGame, joinNetworkGame, startAIGame)
+  import Util (getInt)
 
   menuLoop :: IO ()
   menuLoop = do 
@@ -13,7 +14,7 @@ module Main where
     putStrLn "4. Play 1v1 locally"
     putStrLn "5. Quit"
 
-    opt <- fmap read getLine 
+    opt <- getInt
 
     case opt of 
       1 -> do putStrLn "Starting a LAN game..."

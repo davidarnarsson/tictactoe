@@ -24,6 +24,7 @@ module GameTypes.ServerGame where
       putStrLn "What is your name?"
       xPlayer <- getLine
 
+      putStrLn "Waiting for player..."
       sock <- open 2345
       dat <- accept sock >>= onJoined xPlayer sock
       return dat
