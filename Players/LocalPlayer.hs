@@ -46,8 +46,3 @@ module Players.LocalPlayer where
   lose lp@(LocalPlayer n t hdl _) ttt = do 
     SP.lose (SP.SinglePlayer n t) ttt
     hClose hdl
-<<<<<<< HEAD
-    
-=======
-    
->>>>>>> a6e5657ce74de181ced8bc560cd42d9a1dfe786f
