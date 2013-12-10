@@ -17,4 +17,4 @@ cabal-version:       >=1.8
 executable tictactoe
   main-is:          Main.hs
   -- other-modules:       
-  build-depends:       base ==4.6.*, parsec ==3.1.*, QuickCheck ==2.6.*, network ==2.4.*, random ==1.0.*, haskeline ==0.7.*
+  build-depends:       base (>=4.5 && <=4.7), parsec ==3.1.*, QuickCheck (>=2.4 && <= 2.7), network (>=2.3 && <= 2.5), random ==1.0.*

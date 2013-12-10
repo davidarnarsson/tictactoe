@@ -75,6 +75,7 @@ module Game where
   -- the game state, as well as end states.
   gameLoop :: (P.Player a, P.Player b) => TicTacToe -> a -> b -> IO()
   gameLoop state playerA playerB = do
+    putStr "\n"
     printGame state
     putStr $ "\nPlayer " ++ P.iName playerA ++ ": \n"
     mv <- P.iMove playerA state

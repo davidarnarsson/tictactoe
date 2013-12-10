@@ -3,6 +3,7 @@ module Main where
   import Control.Exception()
   import Game (startLocalGame, startNetworkGame, joinNetworkGame, startAIGame)
   import Util (getInt)
+  import System.IO 
 
   menuLoop :: IO ()
   menuLoop = do 
@@ -35,5 +36,6 @@ module Main where
 
   main :: IO () 
   main = withSocketsDo $ do 
+    hSetBuffering stdout NoBuffering
     putStrLn "Tic Tac Toe v0.01"
     menuLoop

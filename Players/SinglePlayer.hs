@@ -38,7 +38,7 @@ module Players.SinglePlayer where
 
   chooseSize :: SinglePlayer -> IO Int
   chooseSize p = do
-    putStrLn "Please choose the size of the board:    "
+    putStrLn "Please choose the size of the board:  "
     n <- getInt 
     if n <= 0 
       then do
@@ -55,6 +55,6 @@ module Players.SinglePlayer where
 
   generatePlayer :: Token -> IO SinglePlayer
   generatePlayer t = do 
-    putStr $ "Enter the name of player " ++ show t
+    putStr $ "Enter the name of player " ++ show t ++ ": "
     n <- getLine
     return (SinglePlayer n t)

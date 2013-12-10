@@ -1,4 +1,3 @@
--- http://hackage.haskell.org/package/haskeline-0.7.1.1/docs/System-Console-Haskeline.html
 module Util where 
   import Data.Char
   import Text.ParserCombinators.Parsec
