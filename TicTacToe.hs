@@ -1,10 +1,7 @@
 module TicTacToe where
   import Test.QuickCheck
-  import Data.Char
   import Data.List
   import Data.Maybe
-  import Util
-  import System.IO
   
   data TicTacToe = TicTacToe { rows :: [[Maybe Token]] }
    deriving (Show, Eq)
@@ -20,6 +17,7 @@ module TicTacToe where
 
   -- Property for emptyBoard. Running quickCheck(prop_emptyBoard) returns the following:
   -- +++ OK, passed 100 tests.
+  prop_emptyBoard :: Int -> Bool
   prop_emptyBoard n = all isNothing (concat $ rows $ emptyBoard n')
     where n' = n `mod` 1000 
 
@@ -65,9 +63,9 @@ module TicTacToe where
   (!!=) list (index, value) = fixList list (index, value) 0
     where
       fixList [] (_, _) _ = []
-      fixList list (index, value) current 
-        | current == index = value : fixList (drop 1 list) (index, value) (current + 1)
-        | otherwise = take 1 list ++ fixList (drop 1 list) (index, value) (current+1)
+      fixList list' (index', value') current 
+        | current == index' = value' : fixList (drop 1 list') (index', value') (current + 1)
+        | otherwise = take 1 list' ++ fixList (drop 1 list') (index', value') (current+1)
 
   data BoundedTupleArr = BTA { arr :: [Int], tpl :: (Int, Int) }
     deriving (Eq, Show)
@@ -76,10 +74,10 @@ module TicTacToe where
  -- to quickCheck prop_Operator
   instance Arbitrary BoundedTupleArr where
     arbitrary = do 
-      arr <- arbitrary
-      idx <- choose (0 , length arr - 1)
+      ar <- arbitrary
+      idx <- choose (0 , length ar - 1)
       inst <- arbitrary
-      return $ BTA arr (idx, inst)
+      return $ BTA ar (idx, inst)
       
   -- The property checks whether the !!= operator successfully inserts value a 
   -- at index i according to the !! operator. Running quickCheck(prop_Operator) returns:
@@ -94,8 +92,8 @@ module TicTacToe where
   update :: TicTacToe -> Pos -> Maybe Token -> TicTacToe
   update (TicTacToe tic) p c = TicTacToe $ rot tic p c
     where 
-      rot (r:rr) (0, y) c = (r !!= (y, c)):rr
-      rot (r:rr) (x, y) c = r:rot rr (x-1, y) c
+      rot (r:rr) (0, y) c' = (r !!= (y, c')):rr
+      rot (r:rr) (x, y) c' = r:rot rr (x-1, y) c'
 
  -- An instance for generating arbitrary Tokens
   instance Arbitrary Token where
@@ -117,8 +115,8 @@ module TicTacToe where
     where 
       -- zip together the cartesian product of x and y and all the cells in the TicTacToe
       idxs = [(x,y) | x <- [0..len], y <- [0..len]] 
-      rows = concat rr
-      p = idxs `zip` rows
+      rows' = concat rr
+      p = idxs `zip` rows'
       len = length rr - 1
 
   -- Generates an arbitrary cell in a TicTacToe
@@ -131,8 +129,8 @@ module TicTacToe where
   -- An instance for generating arbitrary TicTacToes
   instance Arbitrary TicTacToe where
     arbitrary =
-      do rows <- sequence [ sequence [ cell | j <- [1..9] ] | i <- [1..9] ]
-         return (TicTacToe rows)
+      do rows' <- sequence [ sequence [ cell | _ <- [1..9]] | _ <- [1..9] ]
+         return (TicTacToe rows')
 
   -- Checks that all the positions that blanks returns are in fact blank.
   -- Output: +++ OK, passed 100 tests.

@@ -6,7 +6,6 @@ module Game where
   import GameTypes.ClientGame as CG (create, cleanUp)
   import GameTypes.LocalGame as LG (create, cleanUp)
   import GameTypes.AIGame as AI (create, cleanUp)
-  import System.IO (hClose, Handle(..))
   import qualified Control.Exception as E
 
   -- starts a local game
@@ -48,18 +47,18 @@ module Game where
                        printRow xs  
                          where
                            charsPrint Nothing = " . |"
-                           charsPrint (Just x) = " " ++ show x ++ " |"
+                           charsPrint (Just x') = " " ++ show x' ++ " |"
 
   
   -- Given a tuple of players and a clean up function 
   -- starts a game of tic tac toe .   
   startGame :: (P.Player a, P.Player b) => IO (a, b) -> ((a, b) -> IO()) -> IO ()
-  startGame create cleanUp = do 
-    players <- create
-    E.catch (do { initGameLoop players; cleanUp players })
-      (\(E.SomeException e) -> do
+  startGame cr clu = do 
+    players <- cr
+    E.catch (do { initGameLoop players; clu players })
+      (\(E.SomeException _) -> do
         putStrLn "An error occurred! Cleaning up!"
-        cleanUp players)
+        clu players)
   
   -- initiates the game by making the players exchange board size
   -- information and firing up the game loop.
@@ -81,10 +80,11 @@ module Game where
     mv <- P.iMove playerA state
     let newState = update state mv (Just $ P.iToken playerA) 
     
-    if win newState mv $ P.iToken playerA then do
-      P.iWin playerA newState
-      P.iLose playerB newState
-    else if isDrawn newState then
-      putStrLn "The game has drawn!"
-    else 
-      gameLoop newState playerB playerA
+    if win newState mv $ P.iToken playerA
+      then do
+        P.iWin playerA newState
+        P.iLose playerB newState
+      else if isDrawn newState then
+        putStrLn "The game has drawn!"
+      else 
+        gameLoop newState playerB playerA

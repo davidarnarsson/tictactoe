@@ -5,15 +5,14 @@ module GameTypes.ServerGame where
   import Net.Protocol (Message(..))
   import Players.RemotePlayer (RemotePlayer(..))
   import Players.LocalPlayer (LocalPlayer(..))
-  import Network (HostName)
-  import Network.Socket (sClose, Socket(..))
+  import Network.Socket (sClose)
   import System.IO
-  import TicTacToe (Token(..), TicTacToe(..))
+  import TicTacToe (Token(..))
 
   -- closes the client handle and the server socket
   cleanUp :: (LocalPlayer, RemotePlayer) -> IO ()
-  cleanUp (LocalPlayer n t hdl Nothing, _) = hClose hdl
-  cleanUp (LocalPlayer n t hdl (Just sock), _) = do
+  cleanUp (LocalPlayer _ _ hdl Nothing, _) = hClose hdl
+  cleanUp (LocalPlayer _ _ hdl (Just sock), _) = do
     hClose hdl
     sClose sock
 
@@ -30,7 +29,7 @@ module GameTypes.ServerGame where
       accept sock >>= onJoined xPlayer sock
     
     where    
-      onJoined ln sock conn@(hdl, _, _) = do 
+      onJoined ln sock (hdl, _, _) = do 
         (Hello name) <- receive hdl
         Hello ln `send` hdl
         

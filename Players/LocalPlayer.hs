@@ -23,23 +23,23 @@ module Players.LocalPlayer where
     iLose = lose
 
   move :: LocalPlayer -> TicTacToe -> IO Pos
-  move lp@(LocalPlayer n t hdl _) ttt = do
+  move (LocalPlayer n t hdl _) ttt = do
     mv <- SP.move (SP.SinglePlayer n t) ttt
     Move mv `send` hdl
     return mv
 
   chooseSize :: LocalPlayer -> IO Int
-  chooseSize (LocalPlayer n t hdl _) = SP.chooseSize (SP.SinglePlayer n t)
+  chooseSize (LocalPlayer n t _ _) = SP.chooseSize (SP.SinglePlayer n t)
 
   receiveSize :: LocalPlayer -> Int -> IO ()
-  receiveSize lp sz = putStrLn $ "A size of " ++ show sz ++ " has been chosen."
+  receiveSize _ sz = putStrLn $ "A size of " ++ show sz ++ " has been chosen."
 
   win :: LocalPlayer -> TicTacToe -> IO ()
-  win lp@(LocalPlayer n t hdl _) ttt = do 
+  win (LocalPlayer n t hdl _) ttt = do 
     SP.win (SP.SinglePlayer n t) ttt
     hClose hdl
     
   lose :: LocalPlayer -> TicTacToe -> IO ()
-  lose lp@(LocalPlayer n t hdl _) ttt = do 
+  lose (LocalPlayer n t hdl _) ttt = do 
     SP.lose (SP.SinglePlayer n t) ttt
     hClose hdl

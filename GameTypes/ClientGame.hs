@@ -2,16 +2,16 @@
 
 module GameTypes.ClientGame where 
   import Net.Communication (send, connect, receive)
-  import Net.Protocol (Message(..), parse, serialize)
-  import System.IO (Handle(..), hClose, hFlush)
-  import Network (HostName)
+  import Net.Protocol (Message(..))
+  import System.IO (hClose)
+  import TicTacToe (Token(..))
   import Players.LocalPlayer
   import Players.RemotePlayer
-  import TicTacToe (TicTacToe(..), Token(..))
-  import Util (getMove)
+  
+  
 
   cleanUp :: (RemotePlayer, LocalPlayer) -> IO ()
-  cleanUp ((RemotePlayer n t hdl), _) = do
+  cleanUp ((RemotePlayer _ _ hdl), _) = do
     hClose hdl
 
   -- Joins a server by connecting to a host and exchanging 

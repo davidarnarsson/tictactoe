@@ -34,4 +34,5 @@ module Net.Protocol where
                           return $ Size x ]
 
   -- Unsurprisingly, returns +++ OK, passed 100 tests. 
+  prop_parse :: Message -> Bool
   prop_parse msg = msg == (parse . serialize) msg

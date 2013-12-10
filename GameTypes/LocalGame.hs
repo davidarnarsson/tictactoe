@@ -1,6 +1,5 @@
 
 module GameTypes.LocalGame where
-  import Players.Player 
   import TicTacToe
   import Players.SinglePlayer
 

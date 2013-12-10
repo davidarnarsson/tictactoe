@@ -4,7 +4,6 @@ module Net.Communication where
   import Network 
   import Network.Socket
   import System.IO as IO 
-  import Data.Word
   import Net.Protocol (Message(..), serialize, parse)
 
   -- http://hackage.haskell.org/package/network-2.4.2.1/docs/Network.html

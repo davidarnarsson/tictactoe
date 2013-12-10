@@ -18,21 +18,21 @@ module Players.AIPlayer where
 
 
   move :: AIPlayer -> TicTacToe -> IO (Int, Int)
-  move p gameState = do
+  move _ gameState = do
     let availMoves = blanks gameState
     let len = length availMoves
     randNum <- randomRIO(0,len-1)
-    let move = availMoves!!randNum
-    return move
+    let move' = availMoves!!randNum
+    return move'
 
   chooseSize :: AIPlayer -> IO Int
-  chooseSize p = randomRIO(3, 6)
+  chooseSize _ = randomRIO(3, 6)
 
   receiveSize :: AIPlayer -> Int -> IO ()
-  receiveSize p i = return ()
+  receiveSize _ _ = return ()
 
   win :: AIPlayer -> TicTacToe -> IO ()
-  win p t = return ()
+  win _ _ = return ()
 
   lose :: AIPlayer -> TicTacToe -> IO ()
-  lose p t = return ()
+  lose _ _ = return ()
