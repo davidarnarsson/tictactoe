@@ -16,16 +16,16 @@ module Players.SinglePlayer where
     iReceiveSize = receiveSize
     
   move :: SinglePlayer -> TicTacToe -> IO (Int, Int)
-  move pp ttt = playerMove ttt 
+  move pp = playerMove 
 
-  playerMove :: TicTacToe -> IO ((Int, Int))
+  playerMove :: TicTacToe -> IO (Int, Int)
   playerMove state = do 
     mv <- getMove
     case mv of 
-      (Left e) -> do rc
-      (Right oMove) -> do
-                  if (T.isLegal state oMove) && (T.isBlank state oMove) then do
-                    return oMove
+      Left e -> rc
+      Right oMove -> 
+                  if T.isLegal state oMove && T.isBlank state oMove 
+                    then return oMove
                   else rc
     where 
       rc = do
@@ -34,8 +34,7 @@ module Players.SinglePlayer where
 
 
   receiveSize :: SinglePlayer -> Int -> IO ()
-  receiveSize sp sz = do 
-    putStrLn $ "Opponent chose size " ++ show sz ++ "."
+  receiveSize sp sz = putStrLn $ "Opponent chose size " ++ show sz ++ "."
 
   chooseSize :: SinglePlayer -> IO Int
   chooseSize p = do
@@ -48,15 +47,13 @@ module Players.SinglePlayer where
       return n
       
   win :: SinglePlayer -> TicTacToe -> IO ()
-  win (SinglePlayer n t) ttt = do
-    putStrLn $ n ++ " wins!"
+  win (SinglePlayer n t) ttt = putStrLn $ n ++ " wins!"
 
   lose :: SinglePlayer -> TicTacToe -> IO ()
-  lose (SinglePlayer n t) ttt = do 
-    putStrLn $ n ++ " lost!"
+  lose (SinglePlayer n t) ttt = putStrLn $ n ++ " lost!"
 
-  generatePlayer :: Token -> IO (SinglePlayer)
+  generatePlayer :: Token -> IO SinglePlayer
   generatePlayer t = do 
-    putStrLn $ "Enter the name of player " ++ show t
-    n <- getLine
+    putStr $ "Enter the name of player " ++ show t
+    n <- getString
     return (SinglePlayer n t)

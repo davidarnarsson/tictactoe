@@ -15,25 +15,28 @@ module Main where
     putStrLn "4. Play 1v1 locally"
     putStrLn "5. Quit\n"
 
-    opt2 <- getChar
-    let opt = digitToInt $ opt2
-
+    opt <- getLine
+    
     case opt of 
-      1 -> do putStrLn "\nStarting a LAN game..."
-              startNetworkGame
-              menuLoop
-      2 -> do putStrLn "\nJoining a LAN game..."
-              joinNetworkGame
-              menuLoop
-      3 -> do startAIGame
-              menuLoop
-      4 -> do putStrLn "\nCreating local game"
-              startLocalGame
-              menuLoop
-      5 -> do putStrLn "\nYou quit!"
-      _ -> do putStrLn "\nInvalid choice! Choose again!" 
-              menuLoop
---lalala
+      "1" -> do 
+        putStrLn "\nStarting a LAN game..."
+        startNetworkGame
+        menuLoop
+      "2" -> do 
+        putStrLn "\nJoining a LAN game..."
+        joinNetworkGame
+        menuLoop
+      "3" -> do 
+        startAIGame
+        menuLoop
+      "4" -> do 
+        putStrLn "\nCreating local game"
+        startLocalGame
+        menuLoop
+      "5" -> putStrLn "\nYou quit!"
+      _ -> do 
+        putStrLn "\nInvalid choice! Choose again!" 
+        menuLoop
 
   main :: IO () 
   main = withSocketsDo $ do 

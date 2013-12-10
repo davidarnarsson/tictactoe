@@ -35,15 +35,15 @@ module Game where
 
   -- Prints out the current game position
   printGame :: TicTacToe -> IO ()
-  printGame tic = do printLines (rows tic)
+  printGame tic = printLines (rows tic)
     where
-      printLines [] = do putStrLn ""
+      printLines [] = putStrLn ""
       printLines (x:xs) = do printRow x 
                              printLines xs
 
   -- Helper function for printGame
   printRow :: [Maybe Token] -> IO ()
-  printRow [] = do putStrLn ""
+  printRow [] = putStrLn ""
   printRow (x:xs) = do putStr (charsPrint x)
                        printRow xs  
                          where
@@ -77,14 +77,14 @@ module Game where
   gameLoop :: (P.Player a, P.Player b) => TicTacToe -> a -> b -> IO()
   gameLoop state playerA playerB = do
     printGame state
-    putStr $ "\nPlayer " ++ (P.iName playerA) ++ ": \n"
+    putStr $ "\nPlayer " ++ P.iName playerA ++ ": \n"
     mv <- P.iMove playerA state
     let newState = update state mv (Just $ P.iToken playerA) 
     
     if win newState mv $ P.iToken playerA then do
       P.iWin playerA newState
       P.iLose playerB newState
-    else if isDrawn newState then do
+    else if isDrawn newState then
       putStrLn "The game has drawn!"
     else 
       gameLoop newState playerB playerA

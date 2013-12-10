@@ -20,17 +20,17 @@ module TicTacToe where
 
   -- Property for emptyBoard. Running quickCheck(prop_emptyBoard) returns the following:
   -- +++ OK, passed 100 tests.
-  prop_emptyBoard n = all (isNothing) [ x | x  <- (concat $ rows $ emptyBoard n')]
+  prop_emptyBoard n = all isNothing (concat $ rows $ emptyBoard n')
     where n' = n `mod` 1000 
 
   -- Checks whether a slot is blank or not
   isBlank :: TicTacToe -> Pos -> Bool
-  isBlank gameState pos = if isNothing slot then True else False
-    where slot = (rows gameState) !! (fst pos) !! (snd pos)
+  isBlank gameState pos = isNothing slot
+    where slot = rows gameState !! fst pos !! snd pos
 
   -- Determines whether the game is drawn or not
   isDrawn :: TicTacToe -> Bool
-  isDrawn gameState =  all (==True) [isJust x | x <- concat $ rows gameState]
+  isDrawn gameState =  and [isJust x | x <- concat $ rows gameState]
 
   -- Determines whether the game has been won by a player or not
   win :: TicTacToe -> (Int, Int) -> Token -> Bool
@@ -38,24 +38,22 @@ module TicTacToe where
     where
       bsize = length $ rows gameState
       row = bsize == length [a | (Just a) <- 
-              filter (==Just currPlayer) (rows gameState !! (fst currentMove))]
+              filter (==Just currPlayer) (rows gameState !! fst currentMove)]
       col = bsize == length [a | (Just a) <- 
-              filter (==Just currPlayer) (transpose (rows gameState) !! (snd currentMove))]
+              filter (==Just currPlayer) ((transpose $ rows gameState) !! snd currentMove)]
       dia1 = bsize == length [a | (Just a) <- 
               filter (==Just currPlayer) (diag (rows gameState))]
       dia2 = bsize == length [a | (Just a) <- 
               filter (==Just currPlayer) (diag (reverse (rows gameState)))]
       diag xs = [xs!!n!!n | n <- [0..length xs-1]]
 
+
   -- Checks whether a move is outside of the length of the TicTacToe
   isLegal :: TicTacToe -> Pos -> Bool
-  isLegal game pos = if row > bsize || col > bsize || row < 0 || col < 0
-    then False
-    else True
+  isLegal game (col,row) = not (row > bsize || col > bsize || row < 0 || col < 0)
       where
         bsize = length (rows game)-1
-        row = fst pos
-        col = snd pos
+        
 
  ---------------------------------------------------------------------------
  -- The code below this comment was adapted from lab 3 to suit the purposes
@@ -68,8 +66,8 @@ module TicTacToe where
     where
       fixList [] (_, _) _ = []
       fixList list (index, value) current 
-        | current == index = [value] ++ fixList (drop 1 list) (index, value) (current+1)
-        | otherwise = take 1 list ++ fixList (drop 1 list) (index, value) (current+1)
+        | current == index = value : fixList (drop 1 list) (index, value) (current + 1)
+        | otherwise = take 1 list ++ fixList (drop 1 list) (index, value) (current+1)
 
   data BoundedTupleArr = BTA { arr :: [Int], tpl :: (Int, Int) }
     deriving (Eq, Show)
@@ -101,7 +99,7 @@ module TicTacToe where
 
  -- An instance for generating arbitrary Tokens
   instance Arbitrary Token where
-    arbitrary = do oneof [return O, return X]
+    arbitrary = oneof [return O, return X]
 
   -- Checks whether the update function actually updates the given cell to the 
   -- given value. Running it gives the following: 

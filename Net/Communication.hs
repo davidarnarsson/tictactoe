@@ -28,7 +28,7 @@ module Net.Communication where
     hFlush hdl
 
   -- Receives a message from a handle
-  receive :: Handle -> IO (Message)
+  receive :: Handle -> IO Message
   receive hdl = do 
     resp <- hGetLine hdl
     let msg = parse resp in return msg

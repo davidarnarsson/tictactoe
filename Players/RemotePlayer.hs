@@ -21,19 +21,18 @@ module Players.RemotePlayer where
 
   move :: RemotePlayer -> TicTacToe -> IO (Int, Int)
   move (RemotePlayer n t hdl) _ = do
-    (Move oMove) <- receive hdl
+    Move oMove <- receive hdl
     putStrLn $ n ++ " placed " ++ show t ++ " in position " ++ show oMove
     return oMove
 
-  chooseSize :: RemotePlayer -> IO (Int)
+  chooseSize :: RemotePlayer -> IO Int
   chooseSize (RemotePlayer n t hdl) = do 
-    (Size sz) <- receive hdl
+    Size sz <- receive hdl
     putStrLn $ n ++ " chose size " ++ show sz
     return sz
 
   receiveSize :: RemotePlayer -> Int -> IO ()
-  receiveSize (RemotePlayer n t hdl) sz = do
-    (Size sz) `send` hdl
+  receiveSize (RemotePlayer n t hdl) sz = Size sz `send` hdl
 
   win :: RemotePlayer -> TicTacToe -> IO ()
   win _ _ = return ()

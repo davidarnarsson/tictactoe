@@ -12,7 +12,8 @@ module GameTypes.ServerGame where
 
   -- closes the client handle and the server socket
   cleanUp :: (LocalPlayer, RemotePlayer) -> IO ()
-  cleanUp ((LocalPlayer n t hdl (Just sock)), _) = do
+  cleanUp (LocalPlayer n t hdl Nothing, _) = hClose hdl
+  cleanUp (LocalPlayer n t hdl (Just sock), _) = do
     hClose hdl
     sClose sock
 
@@ -25,17 +26,16 @@ module GameTypes.ServerGame where
       xPlayer <- getLine
 
       putStrLn "Waiting for player..."
-      sock <- open 2345
-      dat <- accept sock >>= onJoined xPlayer sock
-      return dat
-
+      sock <- open 2345  
+      accept sock >>= onJoined xPlayer sock
+    
     where    
       onJoined ln sock conn@(hdl, _, _) = do 
         (Hello name) <- receive hdl
-        (Hello ln) `send` hdl
+        Hello ln `send` hdl
         
-        let lp = (LocalPlayer ln X hdl (Just sock)) 
-        let rm = (RemotePlayer name O hdl)
+        let lp = LocalPlayer ln X hdl (Just sock)
+        let rm = RemotePlayer name O hdl
 
         return (lp, rm)
     

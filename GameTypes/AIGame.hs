@@ -8,7 +8,7 @@ module GameTypes.AIGame where
   create :: IO (SinglePlayer, AIPlayer) 
   create = do
     x <- generatePlayer X 
-    return (x, (AIPlayer O)) 
+    return (x, AIPlayer O) 
 
   cleanUp :: (SinglePlayer, AIPlayer) -> IO ()
   cleanUp _ = return ()

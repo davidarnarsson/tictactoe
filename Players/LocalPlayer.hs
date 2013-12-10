@@ -25,17 +25,14 @@ module Players.LocalPlayer where
   move :: LocalPlayer -> TicTacToe -> IO Pos
   move lp@(LocalPlayer n t hdl _) ttt = do
     mv <- SP.move (SP.SinglePlayer n t) ttt
-    (Move mv) `send` hdl
+    Move mv `send` hdl
     return mv
 
-  chooseSize :: LocalPlayer -> IO (Int)
-  chooseSize (LocalPlayer n t hdl _) = do 
-    sz <- SP.chooseSize (SP.SinglePlayer n t)
-    return sz
+  chooseSize :: LocalPlayer -> IO Int
+  chooseSize (LocalPlayer n t hdl _) = SP.chooseSize (SP.SinglePlayer n t)
 
   receiveSize :: LocalPlayer -> Int -> IO ()
-  receiveSize lp sz = do 
-    putStrLn $ "A size of " ++ show sz ++ " has been chosen."
+  receiveSize lp sz = putStrLn $ "A size of " ++ show sz ++ " has been chosen."
 
   win :: LocalPlayer -> TicTacToe -> IO ()
   win lp@(LocalPlayer n t hdl _) ttt = do 
